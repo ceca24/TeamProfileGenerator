@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const generateHTML = require('./src/generateHTML');
 
+const Employee = require('./lib/employee');
 const Manager = require('./lib/manager');
 const Engineer = require('./lib/engineer');
 const Intern = require('./lib/intern');
@@ -15,7 +16,7 @@ const questions = [
     function addEmployee() {
         inquirer.prompt([
             {
-                type: 'list',
+                type: 'input',
                 name: 'role',
                 message: 'What is the employee role?',
                 choices: ['Manager', 'Engineer', 'Intern', 'Done']
