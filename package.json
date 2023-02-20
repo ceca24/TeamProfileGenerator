@@ -4,26 +4,26 @@
     "description": "## Your Task",
     "main": "index.js",
     "directories": {
-      "lib": "lib"
+        "lib": "lib"
     },
     "scripts": {
-      "test": "jest --verbose test/*"
+        "test": "jest --verbose test/*"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/ceca24/TeamProfileGenerator"
+        "type": "git",
+        "url": "git+https://github.com/ceca24/TeamProfileGenerator"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/ceca24/TeamProfileGenerator/issues"
+        "url": "https://github.com/ceca24/TeamProfileGenerator/issues"
     },
     "homepage": "https://github.com/ceca24/TeamProfileGenerator#readme",
     "dependencies": {
-      "inquirer": "^8.2.4"
+        "inquirer": "^8.2.4"
     },
     "devDependencies": {
-      "jest": "^24.9.0"
+        "jest": "^24.9.0"
     }
-  }
+}
