@@ -1,5 +1,5 @@
 // required modules
-const inquirer = require("inquirer")
+const inquirer = require("inquirer");
 const fs = require("fs");
 // links to JS file to generate HTML
 const generateHTML = require("./src/generateHTML.js")
