@@ -1,141 +1,172 @@
-const inquirer = require('inquirer');
-const fs = require('fs');
+// required modules
+const inquirer = require("inquirer")
+const fs = require("fs");
+// links to JS file to generate HTML
+const generateHTML = require("./src/generateHTML.js")
+// for jest tests
+const Employee = require("./lib/Employee.js")
+const Engineer = require("./lib/Engineer.js")
+const Intern = require("./lib/Intern.js")
+const Manager = require("./lib/Manager.js")
 
-const generateHTML = require('./src/generateHTML');
+// init array to hold role objects
+const officeArr = []
 
-const Employee = require('./lib/employee');
-const Manager = require('./lib/manager');
-const Engineer = require('./lib/engineer');
-const Intern = require('./lib/intern');
-
-
-const buildOfficeArr = [];
-
-const questions = [
-
-    function addEmployee() {
-        inquirer.prompt([
-            {
-                type: 'input',
-                name: 'role',
-                message: 'What is the employee role?',
-                choices: ['Manager', 'Engineer', 'Intern', 'Done']
-            }
-        ]).then(function (data) {
-            if (data.role === 'Manager') {
-                addManager();
-            } else if (data.role === 'Engineer') {
-                addEngineer();
-            } else if (data.role === 'Intern') {
-                addIntern();
-            } else {
-                console.log('Done');
-                console.log(buildOfficeArr);
-                const html = generateHTML(buildOfficeArr);
-                fs.writeFile('./dist/index.html', html, function (err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                });
-            }
-        });
-    },
-    function addManager() {
-        inquirer.prompt([
-            {
-                type: 'input',
-                name: 'name',
-                message: 'What is the manager name?'
-            },
-            {
-                type: 'input',
-                name: 'id',
-                message: 'What is the manager id?'
-            },
-            {
-                type: 'input',
-                name: 'email',
-                message: 'What is the manager email?'
-            },
-            {
-                type: 'input',
-                name: 'officeNumber',
-                message: 'What is the manager office number?'
-            }
-        ]).then(function (data) {
-            const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
-            buildOfficeArr.push(manager);
-            addEmployee();
-        });
-    },
-    function addEngineer() {
-        inquirer.prompt([
-            {
-                type: 'input',
-                name: 'name',
-                message: 'What is the engineer name?'
-            },
-            {
-                type: 'input',
-                name: 'id',
-                message: 'What is the engineer id?'
-            },
-            {
-                type: 'input',
-                name: 'email',
-                message: 'What is the engineer email?'
-            },
-            {
-                type: 'input',
-                name: 'github',
-                message: 'What is the engineer github?'
-            },
-        ]).then(function (data) {
-            const engineer = new Engineer(data.name, data.id, data.email, data.github);
-            buildOfficeArr.push(engineer);
-            addEmployee();
-        });
-    },
-    function addIntern() {
-        inquirer.prompt([
-            {
-                type: 'input',
-                name: 'name',
-                message: 'What is the intern name?'
-            },
-            {
-                type: 'input',
-                name: 'id',
-                message: 'What is the intern id?'
-            },
-            {
-                type: 'input',
-                name: 'email',
-                message: 'What is the intern email?'
-            },
-            {
-                type: 'input',
-                name: 'school',
-                message: 'What is the intern school?'
-            },
-        ]).then(function (data) {
-            const intern = new Intern(data.name, data.id, data.email, data.school);
-            buildOfficeArr.push(intern);
-            addEmployee();
-        });
-    },
+// inquirer questions for manager role
+const managerRole = [
+  {
+      name: 'role',
+      type: 'confirm',
+      message: 'Would you like to create a new Team Profile?',
+  },  
+  {
+      name: 'confirmManager',
+      type: 'list',
+      message: "Press enter to confirm",
+      choices: [
+        'Manager'
+    ]
+  },
+  {
+      name: 'name',
+      type: 'input',
+      message: 'Enter the name of the manager:',
+  },
+  {
+      name: 'id',
+      type: 'input',
+      message: 'Enter your Employee ID',
+  },
+  {
+      name: 'email',
+      type: 'input',
+      message: 'Enter your email address',
+  },
+  {
+      name: 'officeNumber',
+      type: 'input',
+      message: 'Enter your office number',
+  },
+  {
+      name: 'continue',
+      type: 'list',
+      choices: [
+          'Add Engineer',
+          'Add Intern',
+          'Exit'
+      ],
+      message: 'Do you want to continue?'
+  },
 ];
 
-function buildWebPage (fileName, data) {
-    fs.writeFile(fileName, data, (err) => {
-        err ? console.log(err) : console.log("success")
-    });
+// inquirer questions for engineer role
+const engineerRole = [
+  {
+    name: 'confirmEngineer',
+    type: 'list',
+    message: "Press enter to confirm",
+    choices: [
+      'Engineer'
+  ]
+  },
+  {
+      name: 'name',
+      type: 'input',
+      message: 'Enter the name of the new engineer',
+  },
+  {
+      name: 'id',
+      type: 'input',
+      message: 'Enter the Employee ID of the new engineer',
+  },
+  {
+      name: 'email',
+      type: 'input',
+      message: 'Enter the email address of the new engineer',
+  },
+  {
+      name: 'github',
+      type: 'input',
+      message: 'Enter the GitHub username of the new engineer',
+  },
+  {
+      name: 'continue',
+      type: 'list',
+      choices: [
+          'Add Engineer',
+          'Add Intern',
+          'Exit'
+      ],
+      message: 'Do you want to continue?'
+  },
+];
+
+// inquirer questions for intern role
+const internRole = [
+  {
+    name: 'confirmIntern',
+    type: 'list',
+    message: "Press enter to confirm",
+    choices: [
+      'Intern'
+  ]
+  },
+  {
+      name: 'name',
+      type: 'input',
+      message: 'Enter the name of the new intern',
+  },
+  {
+      name: 'id',
+      type: 'input',
+      message: 'Enter the Employee ID of the new intern',
+  },
+  {
+      name: 'email',
+      type: 'input',
+      message: 'Enter the email address of the new intern',
+  },
+  {
+      name: 'school',
+      type: 'input',
+      message: 'Enter the current school for the new intern',
+  },
+  {
+      name: 'continue',
+      type: 'list',
+      choices: [
+          'Add Engineer',
+          'Add Intern',
+          'Exit'
+      ],
+      message: 'Do you want to continue?',
+  },
+];
+
+// main function takes previously defined role inquirer questions as a paramter
+function init(rolesArr) {
+ inquirer.prompt(rolesArr)
+  .then((role) => {
+    // pushes pushes role to office array
+    officeArr.push(role);
+    // if "Add Engineer" is selected calls init function and passes engineer inquirer questions
+    if (role.continue === 'Add Engineer') {
+        init(engineerRole);
+    // if "Add Intern" is selected calls init function and passes intern inquirer questions
+    } else if (role.continue === 'Add Intern') {
+        init(internRole);
+    } else {
+    // passes office array to the generateHTML function
+        generateHTML(officeArr);
+// used to finish HTML 
+fs.writeFileSync(`./index.html`, `
+</div>
+</body>
+</html>`, {flag: 'a'})
+    }
+})
+.catch((err) => console.log(err));
 }
 
-function init(){
-    return inquirer.prompt(questions).then((htmlInfo) => {
-        writeToFile("./dist/index.html", generateHTML(htmlInfo));
-    });
-}
-
-init()
+// Function call to initialize app
+init(managerRole);
