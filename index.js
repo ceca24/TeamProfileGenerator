@@ -1,172 +1,204 @@
-// required modules
-const inquirer = require("inquirer");
 const fs = require("fs");
-// links to JS file to generate HTML
-const generateHTML = require("./src/generateHTML.js")
-// for jest tests
-const Employee = require("./lib/Employee.js")
-const Engineer = require("./lib/Engineer.js")
-const Intern = require("./lib/Intern.js")
-const Manager = require("./lib/Manager.js")
+const inquirer = require("inquirer");
+const buildHtml = require("./src/generateHTML")
 
-// init array to hold role objects
-const officeArr = []
 
-// inquirer questions for manager role
-const managerRole = [
-  {
-      name: 'role',
-      type: 'confirm',
-      message: 'Would you like to create a new Team Profile?',
-  },  
-  {
-      name: 'confirmManager',
-      type: 'list',
-      message: "Press enter to confirm",
-      choices: [
-        'Manager'
-    ]
-  },
-  {
-      name: 'name',
-      type: 'input',
-      message: 'Enter the name of the manager:',
-  },
-  {
-      name: 'id',
-      type: 'input',
-      message: 'Enter your Employee ID',
-  },
-  {
-      name: 'email',
-      type: 'input',
-      message: 'Enter your email address',
-  },
-  {
-      name: 'officeNumber',
-      type: 'input',
-      message: 'Enter your office number',
-  },
-  {
-      name: 'continue',
-      type: 'list',
-      choices: [
-          'Add Engineer',
-          'Add Intern',
-          'Exit'
-      ],
-      message: 'Do you want to continue?'
-  },
-];
+const { Employee } = require("./lib/employee");
+const { Engineer } = require("./lib/engineer");
+const { Intern } = require("./lib/intern");
+const { Manager } = require("./lib/manager");
+const employeeArray = [];
 
-// inquirer questions for engineer role
-const engineerRole = [
-  {
-    name: 'confirmEngineer',
-    type: 'list',
-    message: "Press enter to confirm",
-    choices: [
-      'Engineer'
-  ]
-  },
-  {
-      name: 'name',
-      type: 'input',
-      message: 'Enter the name of the new engineer',
-  },
-  {
-      name: 'id',
-      type: 'input',
-      message: 'Enter the Employee ID of the new engineer',
-  },
-  {
-      name: 'email',
-      type: 'input',
-      message: 'Enter the email address of the new engineer',
-  },
-  {
-      name: 'github',
-      type: 'input',
-      message: 'Enter the GitHub username of the new engineer',
-  },
-  {
-      name: 'continue',
-      type: 'list',
-      choices: [
-          'Add Engineer',
-          'Add Intern',
-          'Exit'
-      ],
-      message: 'Do you want to continue?'
-  },
-];
+const newEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What is your job title?",
+        name: "title",
+        choices: ["Employee", "Engineer", "Manager", "Intern", "None"],
+      }
+    ])
+    .then((response) => {
+      console.log(response);
+      if (response.title === "Employee") {
+        createEmployee();
+      }
+      else if (response.title === "Engineer"){
+        createEngineer();
+      }
+      else if (response.title === "Intern"){
+        createIntern();
 
-// inquirer questions for intern role
-const internRole = [
-  {
-    name: 'confirmIntern',
-    type: 'list',
-    message: "Press enter to confirm",
-    choices: [
-      'Intern'
-  ]
-  },
-  {
-      name: 'name',
-      type: 'input',
-      message: 'Enter the name of the new intern',
-  },
-  {
-      name: 'id',
-      type: 'input',
-      message: 'Enter the Employee ID of the new intern',
-  },
-  {
-      name: 'email',
-      type: 'input',
-      message: 'Enter the email address of the new intern',
-  },
-  {
-      name: 'school',
-      type: 'input',
-      message: 'Enter the current school for the new intern',
-  },
-  {
-      name: 'continue',
-      type: 'list',
-      choices: [
-          'Add Engineer',
-          'Add Intern',
-          'Exit'
-      ],
-      message: 'Do you want to continue?',
-  },
-];
+      }
+      else if (response.title === "Manager"){
+        createManager();
+      }
+      else{fs.writeFileSync("sample.html", buildHtml(employeeArray), (err) =>
+      err ? console.log(err) : console.log("Successfully created HTML file!"))}
+    })
+};
 
-// main function takes previously defined role inquirer questions as a paramter
-function init(rolesArr) {
- inquirer.prompt(rolesArr)
-  .then((role) => {
-    // pushes pushes role to office array
-    officeArr.push(role);
-    // if "Add Engineer" is selected calls init function and passes engineer inquirer questions
-    if (role.continue === 'Add Engineer') {
-        init(engineerRole);
-    // if "Add Intern" is selected calls init function and passes intern inquirer questions
-    } else if (role.continue === 'Add Intern') {
-        init(internRole);
-    } else {
-    // passes office array to the generateHTML function
-        generateHTML(officeArr);
-// used to finish HTML 
-fs.writeFileSync(`./index.html`, `
-</div>
-</body>
-</html>`, {flag: 'a'})
-    }
-})
-.catch((err) => console.log(err));
-}
 
-// Function call to initialize app
-init(managerRole);
+newEmployee();
+
+
+const createEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is your employee ID number?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is your email address?",
+        name: "email",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      const employeeInstance = new Employee (
+        response.name,
+        response.id,
+        response.email,
+      );
+      employeeArray.push(employeeInstance);
+      console.log(employeeArray);
+      newEmployee()
+    });
+};
+
+
+const createEngineer = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is your employee ID number?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is your email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is the link to your personal GitHub?",
+        name: "github",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      const engineerInstance = new Engineer(
+        response.name,
+        response.id,
+        response.email,
+        response.github
+      );
+      employeeArray.push(engineerInstance);
+      console.log(employeeArray);
+      newEmployee()
+    });
+};
+
+const createManager = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is your employee ID number?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is your email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What is your office number?",
+        name: "officeNumber",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      const managerInstance = new Manager(
+        response.name,
+        response.id,
+        response.email,
+        response.officeNumber,
+      );
+      employeeArray.push(managerInstance);
+      console.log(employeeArray);
+      newEmployee()
+    });
+};
+
+const createIntern = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is your name?",
+        name: "name",
+      },
+      {
+        type: "input",
+        message: "What is your employee ID number?",
+        name: "id",
+      },
+      {
+        type: "input",
+        message: "What is your email address?",
+        name: "email",
+      },
+      {
+        type: "input",
+        message: "What school are you currently attending?",
+        name: "school",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      const internInstance = new Intern (
+        response.name,
+        response.id,
+        response.email,
+        response.school,
+      );
+      employeeArray.push(internInstance);
+      console.log(employeeArray);
+      newEmployee()
+    });
+};
+
+
+function jobTitle(title) {
+  if (title === "Intern") {
+    title = '![Title: Intern](<img src="/src/user-graduate-solid.svg">)';
+  } else if (title === "Engineer") {
+    title = '![Title: Engineer](<img src="/src/user-gear-solid.svg">)';
+  } else if (title === "Manager") {
+    title = '![Title: Manager](<img src="/src/user-tie-solid.svg">)';
+  } else {
+    title = '![Title: Employee](<img src="/src/user-regular.svg">)';
+  }
+  return title;}
