@@ -34,7 +34,7 @@ const newEmployee = () => {
       else if (response.title === "Manager"){
         createManager();
       }
-      else{fs.writeFileSync("sample.html", buildHtml(employeeArray), (err) =>
+      else{fs.writeFileSync("index.html", buildHtml(employeeArray), (err) =>
       err ? console.log(err) : console.log("Successfully created HTML file!"))}
     })
 };
@@ -193,12 +193,12 @@ const createIntern = () => {
 
 function jobTitle(title) {
   if (title === "Intern") {
-    title = '![Title: Intern](<img src="/src/user-graduate-solid.svg">)';
+    title = '![Title: Intern]';
   } else if (title === "Engineer") {
-    title = '![Title: Engineer](<img src="/src/user-gear-solid.svg">)';
+    title = '![Title: Engineer]';
   } else if (title === "Manager") {
-    title = '![Title: Manager](<img src="/src/user-tie-solid.svg">)';
+    title = '![Title: Manager]';
   } else {
-    title = '![Title: Employee](<img src="/src/user-regular.svg">)';
+    title = '![Title: Employee]';
   }
   return title;}
