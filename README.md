@@ -33,7 +33,7 @@
   
   Run the following command in the root directory and answer the questions that are prompted; node index.js
 
-  Recording of usage can be found [here]().
+  Recording of usage can be found [here](./media/Untitled_%20Mar%2014%2C%202023%2011_14%20PM.webm).
   
   ## License
     
