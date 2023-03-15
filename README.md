@@ -26,7 +26,7 @@
   To install necessary dependencies, run the following command:
   
   ```
-  npm install inquirer; npm init
+  npm install; node index.js
   ```
   
   ## Usage
