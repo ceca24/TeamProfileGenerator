@@ -3,7 +3,7 @@ const fs = require('fs');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
-const generateTeam = require('./src/page-template');
+const generateTeam = require('./src/generateHTML');
 
 const newEmployee = [];
 
@@ -81,7 +81,7 @@ const addEmployee = async () => {
         await addEmployee();
     } else {
         const html = generateTeam(newEmployee);
-        fs.writeFile('./dist/index.html', html, (err) => {
+        fs.writeFile('./index.html', html, (err) => {
             if (err) throw err;
             console.log('The file has been saved!');
         });
