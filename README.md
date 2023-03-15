@@ -33,7 +33,7 @@
   
   Run the following command in the root directory and answer the questions that are prompted; node index.js
 
-  Recording of usage can be found [here](./media/Team%20Profile%20Generator.webm).
+  Recording of usage can be found [here]().
   
   ## License
     
